@@ -8,10 +8,6 @@ function expressConfig(port) {
   app.get("/", function (req, res) {
     res.send("hello world");
   });
-
-  // app.listen(port, () => {
-  //   console.log(`Server is listening on port ${port}...`);
-  // });
 }
 
 module.exports = expressConfig;
