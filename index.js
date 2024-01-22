@@ -1,4 +1,3 @@
-const express = require("express");
 const expressConfig = require("./expressConfig");
 const hbsConfig = require("./hbsConfig");
 
