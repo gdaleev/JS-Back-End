@@ -1,9 +1,9 @@
 <section id="search">
   <h1>Search</h1>
-  <form action="" method="" class="form">
-    <input type="text" class="search" name="search" placeholder="Title..." />
-    <input type="text" name="" class="genre" placeholder="Genre..." />
-    <input type="number" name="" class="year" placeholder="Year..." />
+  <form action="/search" method="post" class="form">
+    <input type="text" class="search" name="title" placeholder="Title..." />
+    <input type="text" name="genre" class="genre" placeholder="Genre..." />
+    <input type="number" name="year" class="year" placeholder="Year..." />
     <input type="submit" value="search" />
   </form>
 </section>
@@ -22,7 +22,7 @@
         <h1>{{this.title}}</h1>
         <h2>Genre: {{this.genre}}</h2>
         <p>Description: {{this.description}}</p>
-        <a href="#" class="details">Details</a>
+        <a href="/details/:{{this.id}}" class="details">Details</a>
       </div>
     </div>
 

@@ -25,8 +25,18 @@
     "genre": "Racing",
     "director": "Justin Lin",
     "year": "2009",
-    "imageUrl": "https://static.wikia.nocookie.net/fastandfurious/images/b/bc/Fast_Four_Poster.jpg/revision/latest?cb=20200323093212",
+    "imageUrl": "https://m.media-amazon.com/images/I/518YNgAMOeL._AC_UF1000,1000_QL80_.jpg",
     "rating": "4",
     "description": "Brian O'Conner, back working for the FBI in Los Angeles, teams up with Dominic Toretto to bring down a heroin importer by infiltrating his operation."
+  },
+  {
+    "id": 4,
+    "title": "Shrek",
+    "genre": "Adventure",
+    "director": "Andrew Adams",
+    "year": "2001",
+    "imageUrl": "https://m.media-amazon.com/images/M/MV5BOGZhM2FhNTItODAzNi00YjA0LWEyN2UtNjJlYWQzYzU1MDg5L2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_FMjpg_UX1000_.jpg",
+    "rating": "5",
+    "description": "A mean lord exiles fairytale creatures to the swamp of a grumpy ogre, who must go on a quest and rescue a princess for the lord in order to get his land back."
   }
 ]
