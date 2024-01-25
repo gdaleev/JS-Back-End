@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const fs = require("fs");
+const loadMovies = require('../loadMovies')
 
 router.get("/", (req, res) => {
   res.render("main");
@@ -15,12 +16,10 @@ router.get("/create", (req, res) => {
   res.render("create");
 });
 
-router.get("/search", (req, res) => {
-  const databasePath = path.join(__dirname, "..", "config", "database.json");
+router.get("/search", async (req, res) => {
+  const movies = await loadMovies()
 
-  const moviesData = JSON.parse(fs.readFileSync(databasePath, "utf-8"));
-
-  res.render("search", { movies: moviesData });
+  res.render("search", { movies });
 });
 
 router.post('/search', (req, res) => {
