@@ -33,7 +33,6 @@ router.post('/search', (req, res) => {
     (!year || movie.year === year)
   );
 
-  // Render the search view with the search results
   res.render('search', { movies: searchResults, searchParams: { title, genre, year } });
 })
 

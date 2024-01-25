@@ -10,28 +10,28 @@
 
 <section id="catalog">
   <div class="band">
+    {{#if movies.length}}
+      <!-- If there are posts for movie in the database display each of them -->
+      {{#each movies}}
+        <!-- If there are posts for creature in the database display each of them -->
+        <div class="flip flip-vertical">
+          <div class="front">
+            <img src={{this.imageUrl}} alt="" />
+          </div>
+          <div class="back">
+            <h1>{{this.title}}</h1>
+            <h2>Genre: {{this.genre}}</h2>
+            <p>Description: {{this.description}}</p>
+            <a href="/details/:{{this.id}}" class="details">Details</a>
+          </div>
+        </div>
 
-    <!-- If there are posts for movie in the database display each of them -->
-    {{#each movies}}
-    <!-- If there are posts for creature in the database display each of them -->
-    <div class="flip flip-vertical">
-      <div class="front">
-        <img src={{this.imageUrl}} alt="Pirates-of-the-Carribean" />
+      {{/each}}
+    {{else}}
+      <!-- If there are no posts matched display: -->
+      <div class="no-posts">
+        <p class="no-offer">There are no movies matched...</p>
       </div>
-      <div class="back">
-        <h1>{{this.title}}</h1>
-        <h2>Genre: {{this.genre}}</h2>
-        <p>Description: {{this.description}}</p>
-        <a href="/details/:{{this.id}}" class="details">Details</a>
-      </div>
-    </div>
-
-    
-    {{/each}}
-
-    <!-- If there are no posts matched display: -->
-    <!-- <div class="no-posts">
-                        <p class="no-offer">There are no movies matched...</p>
-                    </div> -->
+    {{/if}}
   </div>
 </section>
