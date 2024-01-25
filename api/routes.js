@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require("path");
 const fs = require("fs");
 const loadMovies = require('../loadMovies')
+const Movie = require('../models/Movie')
 
 router.get("/", (req, res) => {
   res.render("main");
@@ -35,16 +36,22 @@ router.post('/search', (req, res) => {
   res.render('search', { movies: searchResults, searchParams: { title, genre, year } });
 })
 
-router.get("/details/:id", (req, res) => {
-  let movieId = req.params.id;
-  movieId = movieId.replace(":", "");
+router.get("/details/:id", async (req, res) => {
+  try {
+    let movieId = req.params.id;
 
-  const databasePath = path.join(__dirname, "..", "config", "database.json");
-  const moviesData = JSON.parse(fs.readFileSync(databasePath, "utf-8"));
+    const movie = await Movie.findById(movieId);
 
-  const movie = moviesData.find((movie) => movie.id == movieId);
+    if (!movie) {
+      res.status(404).send("Movie not found");
+      return;
+    }
 
-  res.render("details", { movie });
+    res.render("details", { movie });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching movie details");
+  }
 });
 
 router.use((req, res, next) => {
