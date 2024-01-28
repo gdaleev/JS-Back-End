@@ -4,6 +4,11 @@ const path = require("path");
 const fs = require("fs");
 const loadMovies = require('../loadMovies')
 const Movie = require('../models/Movie')
+const Cast = require('../models/Cast')
+const bodyParser = require("body-parser");
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 
 router.get("/", (req, res) => {
   res.render("main");
@@ -78,6 +83,25 @@ router.get("/details/:id", async (req, res) => {
 
 router.get("/create/cast", (req, res) => {
   res.render("cast-create")
+})
+
+router.post("/create/cast", async (req, res) => {
+  const formData = req.body;
+  console.log("Form data:", formData);
+  const newCast = new Cast({
+    name: formData.name,
+    age: formData.age,
+    born: formData.born,
+    nameInMovie: formData.nameInMovie,
+    castImage: formData.castImage,
+  })
+  console.log("New Cast instance:", newCast);
+  try {
+    const savedCast = await newCast.save();
+    res.redirect("/");
+  } catch {
+    res.status(500).json({ error: "Failed to create new cast." });
+  }
 })
 
 router.get("/attach/cast/:id", async (req, res) => {
