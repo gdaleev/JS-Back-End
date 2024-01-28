@@ -1,6 +1,6 @@
 const Cast = require("./models/Cast");
 
-const loadMovies = async () => {
+const loadCasts = async () => {
   try {
     const casts = await Cast.find();
     return casts;

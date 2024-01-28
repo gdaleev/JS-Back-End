@@ -6,6 +6,7 @@ const loadMovies = require('../loadMovies')
 const Movie = require('../models/Movie')
 const Cast = require('../models/Cast')
 const bodyParser = require("body-parser");
+const loadCasts = require('../loadCasts');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -115,7 +116,9 @@ router.get("/attach/cast/:id", async (req, res) => {
       return;
     }
 
-    res.render("cast-attach", { movie });
+    const casts = await loadCasts();
+
+    res.render("cast-attach", { movie, casts });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error fetching movie details");
