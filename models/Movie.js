@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
 
 const movieSchema = new mongoose.Schema({
     title: {
@@ -36,8 +37,14 @@ const movieSchema = new mongoose.Schema({
         validate: function(value) {
             return /https?/.test(value)
         }
-    }
-    //TODO: cast – a collection of ObjectIds, ref Cast Mode
+    },
+    cast: {
+        type: [{
+          type: Schema.Types.ObjectId,
+          ref: 'Cast'
+        }],
+        default: []
+      }
 })
 
 const Movie = mongoose.model('Movie', movieSchema)

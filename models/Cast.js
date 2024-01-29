@@ -1,34 +1,43 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const castSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
+  name: {
+    type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
+    required: true,
+    max: 100,
+    min: 14,
+  },
+  born: {
+    type: String,
+    required: true,
+  },
+  nameInMovie: {
+    type: String,
+    required: true,
+  },
+  castImage: {
+    type: String,
+    required: true,
+    validate: function (value) {
+      return /https?/.test(value);
     },
-    age: {
-        type: Number,
-        required: true,
-        max: 100,
-        min: 14
-    },
-    born: {
-        type: String, 
-        required: true
-    },
-    nameInMovie: {
-        type: String,
-        required: true
-    },
-    castImage: {
-        type: String,
-        required: true,
-        validate: function(value) {
-            return /https?/.test(value)
-        }
-    },
-    // TODO: movie – ObjectId, ref Movie Mode
-})
+  },
+  movie: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Movie",
+      },
+    ],
+    default: [],
+  },
+});
 
-const Cast = mongoose.model('Cast', castSchema)
+const Cast = mongoose.model("Cast", castSchema);
 
 module.exports = Cast;
