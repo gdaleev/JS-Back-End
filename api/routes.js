@@ -81,7 +81,9 @@ router.get("/details/:id", async (req, res) => {
       return;
     }
 
-    res.render("details", { movie });
+    const casts = await Cast.find({ movie: movieId });
+
+    res.render("details", { movie, casts });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error fetching movie details");
