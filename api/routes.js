@@ -124,7 +124,8 @@ router.get("/attach/cast/:id", async (req, res) => {
       return;
     }
 
-    const casts = await loadCasts();
+    let casts = await loadCasts();
+    casts = casts.filter(castsToNotDisplay => !movie.cast.includes(castsToNotDisplay._id))
 
     res.render("cast-attach", { movie, casts });
   } catch (error) {
