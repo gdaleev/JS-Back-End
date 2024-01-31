@@ -12,11 +12,6 @@ function hbsConfig(port) {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
-  // const configFolderPath = path.join(__dirname, "config");
-  // const databasePath = path.join(configFolderPath, "database.json");
-
-  // const moviesData = JSON.parse(fs.readFileSync(databasePath, "utf-8"));
-
   app.engine(
     "handlebars",
     exphbs.engine({

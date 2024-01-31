@@ -31,29 +31,23 @@ router.get("/search", async (req, res) => {
 
 router.post("/search", async (req, res) => {
   try {
-    const searchTitle = req.body.title; // Assuming the search term is provided in the query parameter 'q'
-    const searchGenre = req.body.genre; // Assuming the year is provided in the query parameter 'year'
-    const searchYear = req.body.year; // Assuming the year is provided in the query parameter 'year'
+    const searchTitle = req.body.title;
+    const searchGenre = req.body.genre;
+    const searchYear = req.body.year;
 
-    // Use a regular expression to make the search case-insensitive and partial
     const regex = new RegExp(searchTerm, "i");
 
-    // Construct the conditions array for the $or operator
     const conditions = [
       searchTitle ? { title: regex } : null,
       searchGenre ? { genre: regex } : null,
-      // Add additional fields as needed
 
-      // Example: search by releaseYear if provided
       searchYear ? { releaseYear: parseInt(searchYear, 10) } : null,
     ];
 
-    // Filter out null values from the conditions array
     const filteredConditions = conditions.filter(
       (condition) => condition !== null
     );
 
-    // Perform the search using the $or operator and additional conditions
     const searchResults = await Movie.find({
       $or: filteredConditions,
     });
@@ -125,7 +119,9 @@ router.get("/attach/cast/:id", async (req, res) => {
     }
 
     let casts = await loadCasts();
-    casts = casts.filter(castsToNotDisplay => !movie.cast.includes(castsToNotDisplay._id))
+    casts = casts.filter(
+      (castsToNotDisplay) => !movie.cast.includes(castsToNotDisplay._id)
+    );
 
     res.render("cast-attach", { movie, casts });
   } catch (error) {
@@ -137,25 +133,25 @@ router.get("/attach/cast/:id", async (req, res) => {
 router.post("/attach/cast/:id", async (req, res) => {
   const movieId = req.params.id;
   const castId = req.body.cast;
-  
+
   try {
-    const movie = await Movie.findById(movieId)
-    const cast = await Cast.findById(castId)
+    const movie = await Movie.findById(movieId);
+    const cast = await Cast.findById(castId);
 
     if (!movie.cast.includes(castId)) {
-      movie.cast.push(castId)
-      await movie.save()
+      movie.cast.push(castId);
+      await movie.save();
     }
 
     if (!cast.movie.includes(movieId)) {
-      cast.movie.push(movieId)
-      await cast.save()
+      cast.movie.push(movieId);
+      await cast.save();
     }
 
-    res.redirect("/")
+    res.redirect("/");
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
