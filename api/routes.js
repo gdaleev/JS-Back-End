@@ -35,22 +35,28 @@ router.post("/search", async (req, res) => {
     const searchGenre = req.body.genre;
     const searchYear = req.body.year;
 
-    const regex = new RegExp(searchTerm, "i");
+    console.log("Search Conditions:", { searchTitle, searchGenre, searchYear });
+
+    const regexTitle = new RegExp(searchTitle, "i");
+    const regexGenre = new RegExp(searchGenre, "i");
 
     const conditions = [
-      searchTitle ? { title: regex } : null,
-      searchGenre ? { genre: regex } : null,
-
-      searchYear ? { releaseYear: parseInt(searchYear, 10) } : null,
+      searchTitle ? { title: regexTitle } : null,
+      searchGenre ? { genre: regexGenre } : null,
+      searchYear ? { year: parseInt(searchYear, 10) } : null,
     ];
 
     const filteredConditions = conditions.filter(
       (condition) => condition !== null
     );
 
+    console.log("Filtered Conditions:", filteredConditions);
+
     const searchResults = await Movie.find({
-      $or: filteredConditions,
+      $and: filteredConditions,
     });
+
+    console.log("Search Results:", searchResults);
 
     res.render("searchResults", {
       results: searchResults,
