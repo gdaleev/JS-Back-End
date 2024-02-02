@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const path = require("path");
-const fs = require("fs");
+const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
+
+
 const loadMovies = require("../loadMovies");
+const loadCasts = require("../loadCasts");
 const Movie = require("../models/Movie");
 const Cast = require("../models/Cast");
-const bodyParser = require("body-parser");
-const loadCasts = require("../loadCasts");
+const User = require("../models/User");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -160,6 +162,69 @@ router.post("/attach/cast/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.get("/login", (req, res) => {
+  res.render("login");
+});
+
+router.get("/register", (req, res) => {
+  res.render("register");
+});
+
+router.post("/register", async (req, res) => {
+  const formData = req.body;
+
+  if (formData.password !== formData.rePassword) {
+    return res.status(400).json({ error: "Passwords do not match" });
+  }
+
+  const newUser = new User({
+    email: formData.email,
+    password: formData.password,
+  });
+
+  try {
+    const savedUser = await newUser.save();
+    res.redirect("/login");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  const {email, password} = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const isPassValid = await user.comparePassword(password)
+
+    if (!isPassValid) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const payloads = { email, userId: user._id };
+    const options = { expiresIn: '2d'};
+    const secret = 'MySuperPrivateSecret';
+    const token = jwt.sign(payloads, secret, options);
+
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 2 * 24 * 60 * 60 * 1000 })
+    res.redirect("/")
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
+
+router.post("/", (req, res) => {
+  res.clearCookie('jwt');
+  res.redirect("/")
+})
 
 router.use((req, res, next) => {
   res.status(404).render("404");
