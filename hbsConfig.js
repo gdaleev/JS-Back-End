@@ -2,15 +2,16 @@ const express = require("express");
 const exphbs = require("express-handlebars");
 const path = require("path");
 const routes = require("./api/routes");
-const fs = require("fs");
 const bodyParser = require("body-parser");
 const loadMovies = require("./loadMovies");
 const Movie = require("./models/Movie");
+const cookieParser = require("cookie-parser");
 
 function hbsConfig(port) {
   const app = express();
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(cookieParser());
 
   app.engine(
     "handlebars",
@@ -28,6 +29,12 @@ function hbsConfig(port) {
 
   app.set("views", path.join(__dirname, "views"));
   app.use("/static", express.static(path.join(__dirname, "static")));
+
+  app.use("/", (req, res, next) => {
+    const isAuthenticated = !!req.cookies.jwt;
+    res.locals.isAuthenticated = isAuthenticated; 
+    next();
+  });
 
   app.get("/", async (req, res) => {
     const movies = await loadMovies();

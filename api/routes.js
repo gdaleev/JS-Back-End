@@ -3,7 +3,6 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 
-
 const loadMovies = require("../loadMovies");
 const loadCasts = require("../loadCasts");
 const Movie = require("../models/Movie");
@@ -12,10 +11,6 @@ const User = require("../models/User");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
-
-router.get("/", (req, res) => {
-  res.render("main");
-});
 
 router.get("/about", (req, res) => {
   res.render("about");
