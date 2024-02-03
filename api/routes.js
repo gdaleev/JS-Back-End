@@ -80,7 +80,9 @@ router.get("/details/:id", async (req, res) => {
 
     const casts = await Cast.find({ movie: movieId });
 
-    res.render("details", { movie, casts });
+    const isAuthorized = movie.creatorId && movie.creatorId === req.user.userId
+
+    res.render("details", { movie, casts, isAuthorized });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error fetching movie details");
@@ -204,11 +206,12 @@ router.post("/login", async (req, res) => {
     }
 
     const payloads = { email, userId: user._id };
+    console.log('User ID before token creation:', user._id);
     const options = { expiresIn: '2d'};
     const secret = 'MySuperPrivateSecret';
     const token = jwt.sign(payloads, secret, options);
 
-    res.cookie('jwt', token, { httpOnly: true, maxAge: 2 * 24 * 60 * 60 * 1000, path: '/' })
+    res.cookie('jwt', token, { httpOnly: false, sameSite: 'None', secure: true, maxAge: 2 * 24 * 60 * 60 * 1000, path: '/' })
     res.redirect("/")
   } catch (error) {
     console.error(error);

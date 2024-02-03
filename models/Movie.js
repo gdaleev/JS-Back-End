@@ -48,8 +48,7 @@ const movieSchema = new mongoose.Schema({
     default: [],
   },
   creatorId: {
-    type: String,
-    required: true,
+    type: String
   }
 });
 

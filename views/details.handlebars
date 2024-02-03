@@ -33,6 +33,12 @@
 
                 <p class="disc">Description: {{movie.description}}</p>
             </div>
+            {{#if isAuthorized}}
+            <div class="details-btn">
+                <button id="edit-button">Edit</button>
+                <button id="delete-button">Delete</button>
+            </div>
+            {{/if}}
         </div>
         <div class="card_right">
             <img src={{movie.imageUrl}} alt="image">
@@ -43,8 +49,7 @@
         {{#each casts}}
         <div class="cast-card">
             <div class="card-img">
-                <img src={{this.castImage}}
-                    alt={{this.name}}>
+                <img src={{this.castImage}} alt={{this.name}}>
             </div>
             <div class="cast-info">
                 <h1>{{this.name}}</h1>
@@ -52,7 +57,7 @@
                 <h3>Born: {{this.born}}</h3>
                 <h3>Name in Movie: {{this.nameInMovie}}</h3>
             </div>
-        </div> 
+        </div>
         {{/each}}
     </div>
 
