@@ -213,7 +213,7 @@ router.post("/login", async (req, res) => {
     const secret = 'MySuperPrivateSecret';
     const token = jwt.sign(payloads, secret, options);
 
-    res.cookie('jwt', token, { httpOnly: true, maxAge: 2 * 24 * 60 * 60 * 1000 })
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 2 * 24 * 60 * 60 * 1000, path: '/' })
     res.redirect("/")
   } catch (error) {
     console.error(error);
@@ -221,7 +221,7 @@ router.post("/login", async (req, res) => {
   }
 })
 
-router.post("/", (req, res) => {
+router.get("/logout", (req, res) => {
   res.clearCookie('jwt');
   res.redirect("/")
 })
