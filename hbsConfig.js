@@ -46,11 +46,12 @@ function hbsConfig(port) {
   // Middleware to verify JWT token
   const verifyToken = async (req, res, next) => {
     try {
+      const publicRoutes = ['/', '/about', '/search', 'login', '/register'];
+
       const token = req.cookies.jwt || req.headers.authorization;
   
-      if (!token) {
-        console.log('No token found');
-        return res.status(401).json({ error: 'Unauthorized' });
+      if (!token || publicRoutes.includes(req.path)) {
+        return next();
       }
   
       const decoded = await jwt.verify(token, 'MySuperPrivateSecret');
