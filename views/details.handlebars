@@ -35,8 +35,16 @@
             </div>
             {{#if isAuthorized}}
             <div class="details-btn">
-                <button id="edit-button">Edit</button>
-                <button id="delete-button">Delete</button>
+                <a href="/edit/{{movie._id}}"><button id="edit-button">Edit</button></a>
+
+                <form id="delete-form" method="POST" action="/delete">
+                    <input type="hidden" name="movieId" value="{{ movie._id }}">
+                        <button id="delete-button" type="submit">Delete</button>
+                </form>
+            </div>
+            {{else}}
+            <div class="details-btn">
+
             </div>
             {{/if}}
         </div>

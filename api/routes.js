@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 
+
 const loadMovies = require("../loadMovies");
 const loadCasts = require("../loadCasts");
 const Movie = require("../models/Movie");
@@ -80,7 +81,7 @@ router.get("/details/:id", async (req, res) => {
 
     const casts = await Cast.find({ movie: movieId });
 
-    const isAuthorized = movie.creatorId && movie.creatorId === req.user.userId
+    const isAuthorized = movie.creatorId && movie.creatorId === req.user.userId;
 
     res.render("details", { movie, casts, isAuthorized });
   } catch (error) {
@@ -190,7 +191,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -199,30 +200,79 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const isPassValid = await user.comparePassword(password)
+    const isPassValid = await user.comparePassword(password);
 
     if (!isPassValid) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const payloads = { email, userId: user._id };
-    console.log('User ID before token creation:', user._id);
-    const options = { expiresIn: '2d'};
-    const secret = 'MySuperPrivateSecret';
+    const options = { expiresIn: "2d" };
+    const secret = "MySuperPrivateSecret";
     const token = jwt.sign(payloads, secret, options);
 
-    res.cookie('jwt', token, { httpOnly: false, sameSite: 'None', secure: true, maxAge: 2 * 24 * 60 * 60 * 1000, path: '/' })
-    res.redirect("/")
+    res.cookie("jwt", token, {
+      httpOnly: false,
+      sameSite: "None",
+      secure: true,
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+    res.redirect("/");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
-})
+});
 
 router.get("/logout", (req, res) => {
-  res.clearCookie('jwt');
-  res.redirect("/")
-})
+  res.clearCookie("jwt");
+  res.redirect("/");
+});
+
+router.get("/edit/:id", async (req, res) => {
+  try {
+    let movieId = req.params.id;
+    const movie = await Movie.findById(movieId);
+    res.render("edit", { movie });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.post("/edit/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const formData = req.body;
+
+    await Movie.findByIdAndUpdate(id, {
+      title: formData.title,
+      genre: formData.genre,
+      director: formData.director,
+      year: formData.year,
+      imageUrl: formData.imageUrl,
+      rating: formData.rating,
+      description: formData.description,
+    });
+
+    res.redirect("/")
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+// Assuming you are using Express
+router.post("/delete", async (req, res) => {
+  try {
+      const movieId = req.body.movieId;
+      await Movie.findByIdAndDelete(movieId);
+      res.redirect("/");
+  } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+  }
+});
+
 
 router.use((req, res, next) => {
   res.status(404).render("404");
