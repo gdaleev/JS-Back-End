@@ -3,7 +3,6 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 
-
 const loadMovies = require("../loadMovies");
 const loadCasts = require("../loadCasts");
 const Movie = require("../models/Movie");
@@ -186,7 +185,19 @@ router.post("/register", async (req, res) => {
     res.redirect("/login");
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    if (error.name === "ValidationError") {
+      // Mongoose validation error
+      const mongooseErrors = Object.values(error.errors).map(
+        (err) => err.message
+      );
+      console.log(mongooseErrors);
+      // return res.status(400).json({ error: validationErrors });
+      return res.render("register", { mongooseErrors, layout: "main" });
+    } else if (error.code === 11000) {
+      // MongoDB duplicate key error (email already exists)
+      return res.status(400).json({ error: "Email is already registered" });
+    }
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -255,24 +266,22 @@ router.post("/edit/:id", async (req, res) => {
       description: formData.description,
     });
 
-    res.redirect("/")
+    res.redirect("/");
   } catch (error) {
     console.error(error);
   }
 });
 
-// Assuming you are using Express
 router.post("/delete", async (req, res) => {
   try {
-      const movieId = req.body.movieId;
-      await Movie.findByIdAndDelete(movieId);
-      res.redirect("/");
+    const movieId = req.body.movieId;
+    await Movie.findByIdAndDelete(movieId);
+    res.redirect("/");
   } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 });
-
 
 router.use((req, res, next) => {
   res.status(404).render("404");

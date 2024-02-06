@@ -5,12 +5,26 @@ const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
-        required: true,
         unique: true,
+        validate: {
+            validator: function(v) {
+                return /^[a-zA-Z0-9]+@([a-zA-Z0-9]+\.){1,}[a-zA-Z0-9]+$/.test(v)
+            },
+            message: `Email is not valid!`
+        },
+        required: [true, 'Email is required'],
+        minlength: [10, 'Email should be at least 10 characters long']
     },
     password: {
         type: String,
-        required: true,
+        validate: {
+            validator: function(v) {
+                return /^[a-zA-Z0-9]+$/.test(v)
+            },
+            message: `Password is not valid!`
+        },
+        required: [true, 'Password is required'],
+        minlength: [6, 'Password should be at least 6 characters long']
     }
 })
 

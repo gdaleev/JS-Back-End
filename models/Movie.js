@@ -5,31 +5,66 @@ const movieSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    validate: {
+      validator: function(v) {
+          return /^[a-zA-Z0-9\s]+$/.test(v)
+      },
+      message: `Title is not valid!`
+  },
+  minlength: [5, 'Title should be at least 5 characters long']
   },
   genre: {
     type: String,
     required: true,
+    validate: {
+      validator: function(v) {
+          return /^[a-zA-Z0-9\s]+$/.test(v)
+      },
+      message: `Genre is not valid!`
+  },
+  minlength: [5, 'Genre should be at least 5 characters long']
   },
   director: {
     type: String,
     required: true,
+    validate: {
+      validator: function(v) {
+          return /^[a-zA-Z0-9\s]+$/.test(v)
+      },
+      message: `Director is not valid!`
+  },
+  minlength: [5, 'Director should be at least 5 characters long']
   },
   year: {
     type: Number,
     required: true,
-    max: 2030,
-    min: 1930,
+    validate: {
+      validator: function(v) {
+          return v >= 1900 && v <= 2024
+      },
+      message: `Year should be between 1900 and 2024`
+  },
   },
   rating: {
     type: Number,
     required: true,
-    max: 5,
-    min: 1,
+    validate: {
+      validator: function(v) {
+          return v >= 1 && v <= 5
+      },
+      message: `Rating should be between 1 and 5`
+  },
   },
   description: {
     type: String,
     required: true,
-    maxlength: 500,
+    validate: {
+      validator: function(v) {
+          return /^[a-zA-Z0-9\s]+$/.test(v)
+      },
+      message: `Description is not valid!`
+  },
+  minlength: [20, 'Description should be at least 20 characters long']
   },
   imageUrl: {
     type: String,

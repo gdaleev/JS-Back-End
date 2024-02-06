@@ -8,9 +8,14 @@
 </head>
 
 <body>
-
+{{#if mongooseErrors}}
   <div id="box">
-
+    <div id="div" class="error-container">
+      <p>
+        {{mongooseErrors.[0]}}
+      </p>
+    </div>
+{{/if}}
     <nav>
       <img src="/static/img/logo.webp" alt="logo" />
 

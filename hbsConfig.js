@@ -46,46 +46,52 @@ function hbsConfig(port) {
   // Middleware to verify JWT token
   const verifyToken = async (req, res, next) => {
     try {
-      const publicRoutes = ['/', '/about', '/search', 'login', '/register'];
+      const publicRoutes = ["/", "/about", "/search", "login", "/register"];
 
       const token = req.cookies.jwt || req.headers.authorization;
-  
+
       if (!token || publicRoutes.includes(req.path)) {
         return next();
       }
-  
-      const decoded = await jwt.verify(token, 'MySuperPrivateSecret');
-      
+
+      const decoded = await jwt.verify(token, "MySuperPrivateSecret");
+
       req.user = decoded;
-      
+
       next();
     } catch (error) {
-      console.error('Token verification failed:', error);
-      return res.status(401).json({ error: 'Invalid token' });
+      console.error("Token verification failed:", error);
+      return res.status(401).json({ error: "Invalid token" });
     }
   };
-  
-  app.use(verifyToken)
+
+  app.use(verifyToken);
 
   app.post("/create", async (req, res) => {
-    const formData = req.body;
-    console.log(req.user._id);
-    const newMovie = new Movie({
-      title: formData.title,
-      genre: formData.genre,
-      director: formData.director,
-      year: formData.year,
-      imageUrl: formData.imageUrl,
-      rating: formData.rating,
-      description: formData.description,
-      creatorId: req.user.userId
-    });
-
     try {
+      const formData = req.body;
+
+      const newMovie = new Movie({
+        title: formData.title,
+        genre: formData.genre,
+        director: formData.director,
+        year: formData.year,
+        imageUrl: formData.imageUrl,
+        rating: formData.rating,
+        description: formData.description,
+        creatorId: req.user.userId,
+      });
+
       const savedMovie = await newMovie.save();
       res.redirect("/");
-    } catch {
-      res.status(500).json({ error: "Failed to create a new movie." });
+    } catch (error) {
+      if (error.name === "ValidationError") {
+        // Mongoose validation error
+        const mongooseErrors = Object.values(error.errors).map((err) => err.message);
+        return res.render("create", {mongooseErrors, layout: 'main'})
+      }
+
+      return res.status(500).json({ error: "Failed to create a new movie." });
     }
   });
 
